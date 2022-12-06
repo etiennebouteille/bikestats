@@ -60,12 +60,44 @@
 	});
 
 	$: workedDaysInMonth = getWorkedDaysInMonth(currentDay, currentMonth);
+	$: currentMonthStat = Math.round(selectedMonth.length / workedDaysInMonth);
 	$: totalDistance = commutes.length * commuteLength;
 	$: weeklyDistance = Math.round(selectedWeek.length * commuteLength);
 </script>
 
-<p>Distance total : {totalDistance}km</p>
-<p>Distance semaine : {weeklyDistance}km</p>
+<div id="container" class="w-80 m-auto pt-5">
+	<h2 class="text-slate-500">Depuis le début</h2>
+	<h1 class="mt-0 leading-none text-slate-900"><span>{Math.round(totalDistance)}</span>km</h1>
+
+	<div class="bg-slate-100 rounded-lg mt-5 pb-3 pt-3 flex justify-around">
+		<div class="text-center">
+			<p class="font-semibold text-slate-700">{currentMonthStat}%</p>
+			<p class="text-emerald-400 font-light text-sm">Ce mois</p>
+		</div>
+		<div class="text-center">
+			<p class="font-semibold text-slate-700">95%</p>
+			<p class="text-pink-500 font-light text-sm">Tendance</p>
+		</div>
+		<div class="text-center">
+			<p class="font-semibold text-slate-700">7.5kg</p>
+			<p class="text-amber-400 font-light text-sm">C02</p>
+		</div>
+	</div>
+
+	<h2>
+		{startOfWeek(currentDay, { weekStartsOn: 1 }).toLocaleDateString('fr-FR', {
+			day: 'numeric',
+			month: 'short'
+		})}
+		-
+		{endOfWeek(currentDay, { weekStartsOn: 1 }).toLocaleDateString('fr-FR', {
+			day: 'numeric',
+			month: 'short'
+		})}
+	</h2>
+</div>
+
+<!-- <p>Distance semaine : {weeklyDistance}km</p>
 
 <p>
 	Semaine du
@@ -125,4 +157,20 @@
 
 <h2>Stats :</h2>
 <p>Ce mois : {Math.floor((selectedMonth.length * 100) / workedDaysInMonth)}%</p>
-<p>Cette semaine : {Math.floor((selectedWeek.length * 100) / 5)}%</p>
+<p>Cette semaine : {Math.floor((selectedWeek.length * 100) / 5)}%</p> -->
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Anton&family=Rubik:wght@400;600&display=swap');
+
+	#container {
+		font-family: 'Rubik', sans-serif;
+	}
+
+	h1 {
+		font-family: 'Anton', sans-serif;
+		font-size: 5em;
+	}
+
+	h1 span {
+		font-size: 1.6em;
+	}
+</style>
