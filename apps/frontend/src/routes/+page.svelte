@@ -7,6 +7,13 @@
 	import startOfWeek from 'date-fns/startOfWeek';
 	import endOfWeek from 'date-fns/endOfWeek';
 	import addDays from 'date-fns/addDays';
+	import differenceInBusinessDays from 'date-fns/differenceInBusinessDays';
+	import startOfMonth from 'date-fns/startOfMonth';
+
+	$: businessDaysSinceStartOfMonth = Math.abs(
+		differenceInBusinessDays(startOfMonth(currentDay), currentDay)
+	);
+	$: trend = Math.round((selectedMonth.length * 100) / businessDaysSinceStartOfMonth);
 
 	export let data;
 	$: commutes = data.commutes;
@@ -47,6 +54,11 @@
 		commutes = [...commutes, record];
 	};
 
+	const handleDeleteDate = async (day) => {
+		await pb.collection('dates').delete(day.id);
+		commutes = commutes.filter((c) => c.id != day.id);
+	};
+
 	$: selectedWeek = commutes.filter((d) => {
 		let wk = getWeek(d.date);
 		if (wk == currentWeek) {
@@ -82,7 +94,7 @@
 		</div>
 		<div style="border-left:1px solid #cbd5e1; height:30px; " />
 		<div class="text-center">
-			<p class="font-semibold text-slate-700">95%</p>
+			<p class="font-semibold text-slate-700">{trend}%</p>
 			<p class="text-pink-500 font-light text-sm">Tendance</p>
 		</div>
 		<div style="border-left:1px solid #cbd5e1; height:30px; " />
@@ -144,7 +156,11 @@
 						: 'bg-slate-300'} aspect-square rounded-full flex justify-center items-center cursor-pointer"
 					style="width: 42px;"
 					on:click={(e) => {
-						handleCheckedDate(index);
+						if (isEmpty(day)) {
+							handleCheckedDate(index);
+						} else {
+							handleDeleteDate(day);
+						}
 					}}
 					on:keydown={(e) => {
 						handleCheckedDate(index);
