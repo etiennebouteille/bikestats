@@ -10,9 +10,12 @@
 	import differenceInBusinessDays from 'date-fns/differenceInBusinessDays';
 	import startOfMonth from 'date-fns/startOfMonth';
 
-	$: businessDaysSinceStartOfMonth = Math.abs(
-		differenceInBusinessDays(startOfMonth(currentDay), currentDay)
-	);
+	$: businessDaysSinceStartOfMonth =
+		Math.abs(differenceInBusinessDays(startOfMonth(currentDay), currentDay)) + 1;
+
+	$: console.log(currentDay.getDay());
+
+	$: console.log(businessDaysSinceStartOfMonth);
 	$: trend = Math.round((selectedMonth.length * 100) / businessDaysSinceStartOfMonth);
 
 	export let data;
@@ -99,7 +102,7 @@
 		</div>
 		<div style="border-left:1px solid #cbd5e1; height:30px; " />
 		<div class="text-center">
-			<p class="font-semibold text-slate-700">7.5kg</p>
+			<p class="font-semibold text-slate-700">{Math.round(totalDistance * 0.12)}kg</p>
 			<p class="text-amber-400 font-light text-sm">C02</p>
 		</div>
 	</div>
