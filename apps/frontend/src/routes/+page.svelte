@@ -3,7 +3,7 @@
 	// import date from 'date-and-time';
 	import { getWeek, getWorkedDaysInMonth } from '../helpers/getWeekOf';
 	import PocketBase from 'pocketbase';
-	const pb = new PocketBase('http://bikestatsapi.etiennebouteille.com');
+	const pb = new PocketBase('https://bikestatsapi.etiennebouteille.com');
 	import startOfWeek from 'date-fns/startOfWeek';
 	import endOfWeek from 'date-fns/endOfWeek';
 	import addDays from 'date-fns/addDays';
