@@ -13,9 +13,9 @@
 	$: businessDaysSinceStartOfMonth =
 		Math.abs(differenceInBusinessDays(startOfMonth(currentDay), currentDay)) + 1;
 
-	$: console.log(currentDay.getDay());
+	// $: console.log(currentDay.getDay());
 
-	$: console.log(businessDaysSinceStartOfMonth);
+	// $: console.log(businessDaysSinceStartOfMonth);
 	$: trend = Math.round((selectedMonth.length * 100) / businessDaysSinceStartOfMonth);
 
 	export let data;
@@ -85,10 +85,12 @@
 </script>
 
 <div id="container" class="w-80 m-auto pt-5">
-	<h2 class="text-slate-500 text-xl">Depuis le début</h2>
+	<h2 class="text-slate-500 text-xl">Depuis le début 🚴</h2>
 	<h1 class="mt-0 leading-none text-slate-900"><span>{Math.round(totalDistance)}</span>km</h1>
 
-	<div class="bg-slate-100 rounded-xl mt-5 pb-3 pt-3 flex justify-evenly items-center">
+	<div
+		class="bg-slate-50/[0.9] backdrop-blur-lg shadow-sm rounded-xl mt-5 pb-3 pt-3 flex justify-evenly items-center"
+	>
 		<div class="text-center">
 			<p class="font-semibold text-slate-700">{currentMonthStat}%</p>
 			<p class="text-emerald-400 font-light text-sm capitalize">
@@ -149,7 +151,7 @@
 		>
 	</div>
 
-	<div class="bg-slate-100 rounded-xl flex justify-evenly mt-2 py-4">
+	<div class="bg-slate-50 rounded-xl flex justify-evenly mt-2 py-4 shadow-sm">
 		{#each weekdays as day, index}
 			<div class="flex flex-col items-center gap-3">
 				<p>{shortDaysString[index]}</p>
@@ -242,8 +244,19 @@
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Anton&family=Rubik:wght@400;600&display=swap');
 
+	:global(body) {
+		/* background-image: url('/bikeforetblur.jpg'); */
+		/* background-size: cover; */
+		background-image: linear-gradient(
+			174.2deg,
+			rgba(255, 244, 228, 1) 7.1%,
+			rgba(240, 246, 238, 1) 67.4%
+		);
+	}
+
 	#container {
 		font-family: 'Rubik', sans-serif;
+		height: 100vh;
 	}
 
 	h1 {
