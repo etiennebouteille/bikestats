@@ -9,6 +9,38 @@
 	import addDays from 'date-fns/addDays';
 	import differenceInBusinessDays from 'date-fns/differenceInBusinessDays';
 	import startOfMonth from 'date-fns/startOfMonth';
+	import { Bar } from 'svelte-chartjs';
+
+	import { Chart, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
+
+	Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+
+	const chartdata = {
+		labels: ['Novembre', 'Décembre'],
+		datasets: [
+			{
+				label: 'Moyenne hebdomadaire',
+				data: [3.2, 3.6],
+				backgroundColor: [
+					'rgba(255, 134,159,0.4)',
+					'rgba(98,  182, 239,0.4)',
+					'rgba(255, 218, 128,0.4)',
+					'rgba(113, 205, 205,0.4)',
+					'rgba(170, 128, 252,0.4)',
+					'rgba(255, 177, 101,0.4)'
+				],
+				borderWidth: 2,
+				borderColor: [
+					'rgba(255, 134, 159, 1)',
+					'rgba(98,  182, 239, 1)',
+					'rgba(255, 218, 128, 1)',
+					'rgba(113, 205, 205, 1)',
+					'rgba(170, 128, 252, 1)',
+					'rgba(255, 177, 101, 1)'
+				]
+			}
+		]
+	};
 
 	$: businessDaysSinceStartOfMonth =
 		Math.abs(differenceInBusinessDays(startOfMonth(today), today)) + 1;
@@ -180,69 +212,12 @@
 			</div>
 		{/each}
 	</div>
-</div>
 
-<!-- <p>Distance semaine : {weeklyDistance}km</p>
-
-<p>
-	Semaine du
-	{startOfWeek(currentDay, { weekStartsOn: 1 }).toLocaleDateString('fr-FR', {
-		day: 'numeric',
-		month: '2-digit'
-	})} au
-	{endOfWeek(currentDay, { weekStartsOn: 1 }).toLocaleDateString('fr-FR', {
-		day: 'numeric',
-		month: '2-digit'
-	})}
-</p>
-
-<div style="width: 150px;">
-	<div class="flex items-center border border-gray-200 divide-x divide-gray-200 rounded">
-		<button
-			type="button"
-			class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75"
-			on:click={() => {
-				currentDay = addDays(currentDay, 7);
-			}}>&plus;</button
-		>
-		<span>
-			<input
-				type="number"
-				id="Quantity"
-				value={currentWeek}
-				class="h-10 w-16 border-transparent text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none"
-			/>
-		</span>
-		<button
-			type="button"
-			class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75"
-			on:click={() => {
-				currentDay = addDays(currentDay, -7);
-			}}>&minus;</button
-		>
+	<div class="bg-slate-50 rounded-xl flex justify-evenly mt-4 py-4 px-3 shadow-sm">
+		<Bar data={chartdata} options={{ responsive: true }} />
 	</div>
 </div>
 
-{#each weekdays as day, index}
-	<p>{daysOfTheWeek[index]}</p>
-	{#if !isEmpty(day)}
-		<p>{day.expand.bike.name}</p>
-		<input type="checkbox" id="scales" name="scales" checked on:change={handleCheckedDate} />
-	{:else}
-		<input
-			type="checkbox"
-			id="scales"
-			name="scales"
-			on:change={(e) => {
-				handleCheckedDate(index);
-			}}
-		/>
-	{/if}
-{/each}
-
-<h2>Stats :</h2>
-<p>Ce mois : {Math.floor((selectedMonth.length * 100) / workedDaysInMonth)}%</p>
-<p>Cette semaine : {Math.floor((selectedWeek.length * 100) / 5)}%</p> -->
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Anton&family=Rubik:wght@400;600&display=swap');
 
