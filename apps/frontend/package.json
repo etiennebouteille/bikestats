@@ -10,6 +10,7 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
+		"@benzara/svelte-animated-counter": "^0.0.3",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/adapter-netlify": "^1.0.0-next.85",
 		"@sveltejs/kit": "next",

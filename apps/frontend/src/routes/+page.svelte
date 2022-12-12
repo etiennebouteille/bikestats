@@ -11,7 +11,7 @@
 	import startOfMonth from 'date-fns/startOfMonth';
 
 	$: businessDaysSinceStartOfMonth =
-		Math.abs(differenceInBusinessDays(startOfMonth(currentDay), currentDay)) + 1;
+		Math.abs(differenceInBusinessDays(startOfMonth(today), today)) + 1;
 
 	// $: console.log(currentDay.getDay());
 
@@ -22,6 +22,8 @@
 	$: commutes = data.commutes;
 
 	let currentDay = new Date();
+	const today = new Date();
+	// $: console.log('today : ', today);
 	$: currentWeek = getWeek(new Date(currentDay));
 	$: currentMonth = new Date(currentDay).getMonth();
 	let commuteLength = 23.6;
