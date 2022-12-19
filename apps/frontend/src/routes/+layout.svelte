@@ -1,5 +1,20 @@
 <script>
 	import '../app.css';
+	export let data;
+
+	let username;
+	let password;
+
+	export const createUser = async () => {
+		const data = {
+			username,
+			password,
+			passwordConfirm: password,
+			name:"hello world"
+		}
+		await locals.pb.collection('users').create(data)
+	}
+
 </script>
 
 <svelte:head>
@@ -21,5 +36,23 @@
 	<meta name="msapplication-TileColor" content="#da532c" />
 	<meta name="theme-color" content="#ffffff" />
 </svelte:head>
+
+{#if !data.user}
+ 	<p>You are not logged in</p>
+	<form action="/login?/register">
+		<input
+		placeholder="username"
+		type="text"
+		bind:value={username}/>
+		
+		<input
+		placeholder="password"
+		type="password"
+		bind:value={password}/>
+		<button type="submit">Créer un compte</button>
+	</form>
+{:else}
+	<p>Congrats! You are logged in</p>
+{/if}
 
 <slot />
