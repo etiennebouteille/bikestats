@@ -8,8 +8,9 @@ export async function handle({ event, resolve }) {
 	event.locals.user = undefined;
 	try {
 		event.locals.pb.authStore.isValid && (await event.locals.pb.collection('users').authRefresh());
-		event.locals.user = event.locals.pb.authStore.model;
-	} catch (_) {
+		event.locals.user = structuredClone(event.locals.pb.authStore.model);
+	} catch (e) {
+		console.log('clearing : ', e);
 		event.locals.pb.authStore.clear();
 	}
 
