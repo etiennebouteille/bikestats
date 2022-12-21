@@ -23,11 +23,29 @@
 	<meta name="theme-color" content="#ffffff" />
 </svelte:head>
 
-{#if !data.user}
- 	<p>You are not logged in</p>
-	
-{:else}
-	<p>Congrats! You are logged in</p>
-{/if}
+<div id="container" class="w-80 m-auto pt-5">
 
-<slot />
+	{#if data.user}	
+	<p class="text-lg mb-5 text-indigo-500 font-medium">Bonjour, {data.user.username} !</p>
+	{/if}
+	
+	<slot />
+	
+</div>
+
+<style>
+	:global(body) {
+		/* background-image: url('/bikeforetblur.jpg'); */
+		/* background-size: cover; */
+		background-image: linear-gradient(
+			174.2deg,
+			rgba(255, 244, 228, 1) 7.1%,
+			rgba(240, 246, 238, 1) 67.4%
+		);
+	}
+
+	#container {
+		font-family: 'Rubik', sans-serif;
+		height: 100vh;
+	}
+</style>

@@ -1,9 +1,8 @@
 <script>
 	import { isEmpty } from 'lodash';
 	// import date from 'date-and-time';
-	import { getWeek, getWorkedDaysInMonth } from '../helpers/getWeekOf';
+	import { getWeek, getWorkedDaysInMonth } from '$lib/helpers/getWeekOf';
 	import PocketBase from 'pocketbase';
-	const pb = new PocketBase('https://bikestatsapi.etiennebouteille.com');
 	import startOfWeek from 'date-fns/startOfWeek';
 	import endOfWeek from 'date-fns/endOfWeek';
 	import addDays from 'date-fns/addDays';
@@ -55,12 +54,19 @@
 			field: 'test'
 		};
 
-		const record = await pb.collection('dates').create(payload, { expand: 'bike' });
+		const res = await fetch('/api/add-day',{
+			method:'POST',
+			body:JSON.stringify(payload)
+		})
+		const record = await res.json()
 		commutes = [...commutes, record];
 	};
 
 	const handleDeleteDate = async (day) => {
-		await pb.collection('dates').delete(day.id);
+		// await pb.collection('dates').delete(day.id);
+		const res = await fetch(`/api/remove-day?day=${day.id}`,{
+			method:'DELETE'
+		})
 		commutes = commutes.filter((c) => c.id != day.id);
 	};
 
@@ -86,7 +92,7 @@
 	$: weeklyDistance = Math.round(selectedWeek.length * commuteLength);
 </script>
 
-<div id="container" class="w-80 m-auto pt-5">
+
 	<h2 class="text-slate-500 text-xl">Depuis le début 🚴</h2>
 	<h1 class="mt-0 leading-none text-slate-900"><span>{Math.round(totalDistance)}</span>km</h1>
 
@@ -180,7 +186,6 @@
 			</div>
 		{/each}
 	</div>
-</div>
 
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Anton&family=Rubik:wght@400;600&display=swap');
@@ -193,11 +198,6 @@
 			rgba(255, 244, 228, 1) 7.1%,
 			rgba(240, 246, 238, 1) 67.4%
 		);
-	}
-
-	#container {
-		font-family: 'Rubik', sans-serif;
-		height: 100vh;
 	}
 
 	h1 {

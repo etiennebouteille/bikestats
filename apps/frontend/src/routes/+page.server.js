@@ -4,6 +4,9 @@ import PocketBase from 'pocketbase';
 
 export async function load({ fetch, params, locals }) {
 	console.log('load function');
+	if (!locals.pb.authStore.isValid) {
+		return {};
+	}
 
 	const getDates = async (userid) => {
 		try {
@@ -18,14 +21,6 @@ export async function load({ fetch, params, locals }) {
 		}
 	};
 
-	// const pb = new PocketBase('https://bikestatsapi.etiennebouteille.com');
-	// const resultList = await pb.collection('dates').getList(1, 50, {
-	// 	filter: 'created >= "2022-01-01 00:00:00"',
-	// 	expand: 'bike'
-	// });
-	// return {
-	// 	commutes: resultList.items
-	// };
 	return {
 		commutes: getDates(locals.user.id)
 	};

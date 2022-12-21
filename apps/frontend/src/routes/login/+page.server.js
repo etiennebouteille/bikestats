@@ -1,5 +1,12 @@
 import { redirect, error } from '@sveltejs/kit';
 
+export async function load({ fetch, params, locals }) {
+	console.log('load function');
+	if (locals.pb.authStore.isValid) {
+		throw redirect(303, '/');
+	}
+}
+
 export const actions = {
 	login: async ({ request, locals }) => {
 		const body = Object.fromEntries(await request.formData());
