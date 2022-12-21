@@ -8,7 +8,6 @@ export const actions = {
 			const connec = await locals.pb
 				.collection('users')
 				.authWithPassword(body.username, body.password);
-			console.log({ connec });
 		} catch (e) {
 			console.log(e);
 			throw error(500, 'could not log in');
