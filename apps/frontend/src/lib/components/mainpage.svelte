@@ -1,5 +1,7 @@
 <script>
-	import { isEmpty } from 'lodash';
+	// import { isEmpty } from 'lodash';
+	import lodash from 'lodash'
+	const {isEmpty} = lodash
 	// import date from 'date-and-time';
 	import { getWeek, getWorkedDaysInMonth } from '$lib/helpers/getWeekOf';
 	// import startOfWeek from 'date-fns/startOfWeek';
