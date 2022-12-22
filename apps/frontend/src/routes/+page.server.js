@@ -12,7 +12,7 @@ export async function load({ fetch, params, locals }) {
 		try {
 			const resultList = await locals.pb.collection('dates').getFullList(undefined, {
 				filter: `user = "${userid}"`,
-				expand: 'bike'
+				expand: 'bike,trajet'
 			});
 			return structuredClone(resultList);
 		} catch (e) {

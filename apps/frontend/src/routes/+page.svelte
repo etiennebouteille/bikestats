@@ -18,7 +18,7 @@
     href="/register"
     class="group mt-5 flex w-full items-center justify-center rounded-md bg-indigo-600 px-5 py-3 text-white transition focus:outline-none focus:ring focus:ring-yellow-400 sm:mt-0 sm:w-auto"
   >
-    <span class="text-sm font-medium"> Créer un compte </span>
+    <span class="text-lg font-medium"> Créer un compte </span>
 
     <svg
       class="ml-3 h-5 w-5"
@@ -35,7 +35,7 @@
       />
     </svg>
   </a>
-  <a href="/login" class="text-center text-md underline mt-3 text-gray-500 block">
+  <a href="/login" class="text-center text-sm underline mt-3 text-gray-500 block">
     J'ai déjà un compte
   </a>
 </div>

@@ -9,7 +9,7 @@
         dolores deleniti inventore quaerat mollitia?
       </p> -->
   
-      <form method="POST" action="?/login" class="mt-6 mb-0 space-y-4 rounded-lg p-8 shadow-2xl">
+      <form method="POST" action="?/login" class="mt-6 mb-0 space-y-4 rounded-lg p-8 shadow-2xl bg-gray-50">
         <p class="text-lg font-medium">Connection à votre compte</p>
   
         <div>

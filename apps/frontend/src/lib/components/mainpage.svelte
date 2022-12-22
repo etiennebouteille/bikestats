@@ -1,23 +1,12 @@
 <script>
-	// import { isEmpty } from 'lodash';
 	import lodash from 'lodash'
 	const {isEmpty} = lodash
-	// import date from 'date-and-time';
 	import { getWeek, getWorkedDaysInMonth } from '$lib/helpers/getWeekOf';
-	// import startOfWeek from 'date-fns/startOfWeek';
-	// import endOfWeek from 'date-fns/endOfWeek';
-	// import addDays from 'date-fns/addDays';
-	// import differenceInBusinessDays from 'date-fns/differenceInBusinessDays';
-	// import startOfMonth from 'date-fns/startOfMonth';
 
 	import {startOfWeek, endOfWeek, addDays, differenceInBusinessDays, startOfMonth} from 'date-fns'
 
 	$: businessDaysSinceStartOfMonth =
 		Math.abs(differenceInBusinessDays(startOfMonth(today), today)) + 1;
-
-	// $: console.log(currentDay.getDay());
-
-	// $: console.log(businessDaysSinceStartOfMonth);
 	$: trend = Math.round((selectedMonth.length * 100) / businessDaysSinceStartOfMonth);
 
 	export let data;
@@ -53,8 +42,7 @@
 		const payload = {
 			date: addDays(currentDay, dayDelta),
 			bike: 'en2el7ymwn7bl0j',
-			textfiled: 'test',
-			field: 'test'
+			trajet:'hlovkbetapb7405'
 		};
 
 		const res = await fetch('/api/add-day',{
@@ -66,7 +54,6 @@
 	};
 
 	const handleDeleteDate = async (day) => {
-		// await pb.collection('dates').delete(day.id);
 		const res = await fetch(`/api/remove-day?day=${day.id}`,{
 			method:'DELETE'
 		})
@@ -89,14 +76,21 @@
 		return false;
 	});
 
+	$: console.log(commutes)
+
+	$: totalDistance = commutes.reduce((accumulator, commute) => {
+		const dist = commute?.expand?.trajet?.distance || 0;
+		return accumulator + dist
+	}, commutes[0]?.expand?.trajet?.distance || 0)
+
+	// $: totalDistance = commutes.length * commuteLength;
 	$: workedDaysInMonth = getWorkedDaysInMonth(currentDay, currentMonth);
 	$: currentMonthStat = Math.round((selectedMonth.length * 100) / workedDaysInMonth);
-	$: totalDistance = commutes.length * commuteLength;
 	$: weeklyDistance = Math.round(selectedWeek.length * commuteLength);
 </script>
 
 
-	<h2 class="text-slate-500 text-xl">Depuis le début 🚴</h2>
+	<h2 class="text-slate-500 text-xl">Depuis le début</h2>
 	<h1 class="mt-0 leading-none text-slate-900"><span>{Math.round(totalDistance)}</span>km</h1>
 
 	<div

@@ -8,7 +8,7 @@
         Partout, tout le temps, et par tous les temps?
       </p>
   
-      <form method="POST" action="?/register" class="mt-6 mb-0 space-y-4 rounded-lg p-8 shadow-2xl">
+      <form method="POST" action="?/register" class="mt-6 mb-0 space-y-4 rounded-lg p-8 shadow-2xl bg-gray-50">
         <p class="text-lg font-medium">Créer un compte sur Flytta 🚴</p>
   
         <div>
