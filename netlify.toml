@@ -17,8 +17,3 @@
   # Default build command.
   command = "vite build"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
