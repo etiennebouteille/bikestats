@@ -1,0 +1,21 @@
+{
+	"name": "Flytta - données mobilité",
+	"short_name": "Flytta",
+	"start_url": ".",
+	"display": "standalone",
+	"background_color": "#fff",
+	"theme_color": "#F5F6E2",
+	"description": "Une micro application pour suivre vos trajets à vélo",
+	"icons": [
+		{
+			"src": "/flytta512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "/android-chrome-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		}
+	]
+}

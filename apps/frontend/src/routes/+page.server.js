@@ -3,7 +3,6 @@ import { getDate } from 'date-fns';
 import PocketBase from 'pocketbase';
 
 export async function load({ fetch, params, locals }) {
-	console.log('load function');
 	if (!locals.pb.authStore.isValid) {
 		return {};
 	}
