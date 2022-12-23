@@ -7,6 +7,6 @@ export async function POST({ request, locals }) {
 		...payload,
 		user: locals.user.id
 	};
-	let res = await locals.pb.collection('dates').create(payload, { expand: 'bike' });
+	let res = await locals.pb.collection('dates').create(payload, { expand: 'bike,trajet' });
 	return json(res);
 }
