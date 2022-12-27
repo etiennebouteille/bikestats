@@ -45,10 +45,13 @@
 		let dayDelta = dayIdx - currentDayIdx;
 
 		const yr = new Date().getFullYear();
+		//TODO : get users default traj id 
 		const payload = {
 			date: addDays(currentDay, dayDelta),
-			bike: 'en2el7ymwn7bl0j',
-			trajet: 'hlovkbetapb7405'
+			bike: 'epcjzi3j236yphy',
+			trajet: '93deadmeq4986wu'
+			// bike: 'en2el7ymwn7bl0j',
+			// trajet: 'hlovkbetapb7405'
 		};
 
 		const res = await fetch('/api/add-day', {

@@ -1,3 +1,237 @@
+## v0.10.3
+
+- ! Renamed the metadata key `original_filename` to `original-filename` due to an S3 file upload error caused by the underscore character ([#1343](https://github.com/pocketbase/pocketbase/pull/1343); thanks @yuxiang-gao).
+
+- Fixed request verification docs api url ([#1332](https://github.com/pocketbase/pocketbase/pull/1332); thanks @JoyMajumdar2001)
+
+- Excluded `collectionId` and `collectionName` from the displayable relation props list ([1322](https://github.com/pocketbase/pocketbase/issues/1322); thanks @dhall2).
+
+
+## v0.10.2
+
+- Fixed nested multiple expands with shared path ([#586](https://github.com/pocketbase/pocketbase/issues/586#issuecomment-1357784227)).
+  A new helper method `models.Record.MergeExpand(map[string]any)` was also added to simplify the expand handling and unit testing.
+
+
+## v0.10.1
+
+- Fixed nested transactions deadlock when authenticating with OAuth2 ([#1291](https://github.com/pocketbase/pocketbase/issues/1291)).
+
+
+## v0.10.0
+
+- Added `/api/health` endpoint (thanks @MarvinJWendt).
+
+- Added support for SMTP `LOGIN` auth for Microsoft/Outlook and other providers that don't support the `PLAIN` auth method ([#1217](https://github.com/pocketbase/pocketbase/discussions/1217#discussioncomment-4387970)).
+
+- Reduced memory consumption (you can expect ~20% less allocated memory).
+
+- Added support for split (concurrent and nonconcurrent) DB connections pool increasing even further the concurrent throughput without blocking reads on heavy write load.
+
+- Improved record references delete performance.
+
+- Removed the unnecessary parenthesis in the generated filter SQL query, reducing the "_parse stack overflow_" errors.
+
+- Fixed `~` expressions backslash literal escaping ([#1231](https://github.com/pocketbase/pocketbase/discussions/1231)).
+
+- Refactored the `core.app.Bootstrap()` to be called before starting the cobra commands ([#1267](https://github.com/pocketbase/pocketbase/discussions/1267)).
+
+- ! Changed `pocketbase.NewWithConfig(config Config)` to `pocketbase.NewWithConfig(config *Config)` and added 4 new config settings:
+  ```go
+  DataMaxOpenConns int // default to core.DefaultDataMaxOpenConns
+  DataMaxIdleConns int // default to core.DefaultDataMaxIdleConns
+  LogsMaxOpenConns int // default to core.DefaultLogsMaxOpenConns
+  LogsMaxIdleConns int // default to core.DefaultLogsMaxIdleConns
+  ```
+
+- Added new helper method `core.App.IsBootstrapped()` to check the current app bootstrap state.
+
+- ! Changed `core.NewBaseApp(dir, encryptionEnv, isDebug)` to `NewBaseApp(config *BaseAppConfig)`.
+
+- ! Removed `rest.UploadedFile` struct (see below `filesystem.File`).
+
+- Added generic file resource struct that allows loading and uploading file content from
+  different sources (at the moment multipart/form-data requests and from the local filesystem).
+  ```
+  filesystem.File{}
+  filesystem.NewFileFromPath(path)
+  filesystem.NewFileFromMultipart(multipartHeader)
+  filesystem/System.UploadFile(file)
+  ```
+
+- Refactored `forms.RecordUpsert` to allow more easily loading and removing files programmatically.
+  ```
+  forms.RecordUpsert.AddFiles(key, filesystem.File...) // add new filesystem.File to the form for upload
+  forms.RecordUpsert.RemoveFiles(key, filenames...)     // marks the filenames for deletion
+  ```
+
+- Trigger the `password` validators if any of the others password change fields is set.
+
+
+## v0.9.2
+
+- Fixed field column name conflict on record deletion ([#1220](https://github.com/pocketbase/pocketbase/discussions/1220)).
+
+
+## v0.9.1
+
+- Moved the record file upload and delete out of the db transaction to minimize the locking times.
+
+- Added `Dao` query semaphore and base fail/retry handling to improve the concurrent writes throughput ([#1187](https://github.com/pocketbase/pocketbase/issues/1187)).
+
+- Fixed records cascade deletion when there are "A<->B" relation references.
+
+- Replaced `c.QueryString()` with `c.QueryParams().Encode()` to allow loading middleware modified query parameters in the default crud actions ([#1210](https://github.com/pocketbase/pocketbase/discussions/1210)).
+
+- Fixed the datetime field not triggering the `onChange` event on manual field edit and added a "Clear" button ([#1219](https://github.com/pocketbase/pocketbase/issues/1219)).
+
+- Updated the GitHub goreleaser action to use go 1.19.4 since it comes with [some security fixes](https://github.com/golang/go/issues?q=milestone%3AGo1.19.4+label%3ACherryPickApproved).
+
+
+## v0.9.0
+
+- Fixed concurrent multi-relation cascade update/delete ([#1138](https://github.com/pocketbase/pocketbase/issues/1138)).
+
+- Added the raw OAuth2 user data (`meta.rawUser`) and OAuth2 access token (`meta.accessToken`) to the auth response ([#654](https://github.com/pocketbase/pocketbase/discussions/654)).
+
+- `BaseModel.UnmarkAsNew()` method was renamed to `BaseModel.MarkAsNotNew()`.
+  Additionally, to simplify the insert model queries with custom IDs, it is no longer required to call `MarkAsNew()` for manually initialized models with set ID since now this is the default state.
+  When the model is populated with values from the database (eg. after row `Scan`) it will be marked automatically as "not new".
+
+- Added `Record.OriginalCopy()` method that returns a new `Record` copy populated with the initially loaded record data (useful if you want to compare old and new field values).
+
+- Added new event hooks:
+  ```go
+  app.OnBeforeBootstrap()
+  app.OnAfterBootstrap()
+  app.OnBeforeApiError()
+  app.OnAfterApiError()
+  app.OnRealtimeDisconnectRequest()
+  app.OnRealtimeBeforeMessageSend()
+  app.OnRealtimeAfterMessageSend()
+  app.OnRecordBeforeRequestPasswordResetRequest()
+  app.OnRecordAfterRequestPasswordResetRequest()
+  app.OnRecordBeforeConfirmPasswordResetRequest()
+  app.OnRecordAfterConfirmPasswordResetRequest()
+  app.OnRecordBeforeRequestVerificationRequest()
+  app.OnRecordAfterRequestVerificationRequest()
+  app.OnRecordBeforeConfirmVerificationRequest()
+  app.OnRecordAfterConfirmVerificationRequest()
+  app.OnRecordBeforeRequestEmailChangeRequest()
+  app.OnRecordAfterRequestEmailChangeRequest()
+  app.OnRecordBeforeConfirmEmailChangeRequest()
+  app.OnRecordAfterConfirmEmailChangeRequest()
+  ```
+
+- The original uploaded file name is now stored as metadata under the `original_filename` key. It could be accessed via:
+  ```go
+  fs, _ := app.NewFilesystem()
+  defer fs.Close()
+
+  attrs, _ := fs.Attributes(fikeKey)
+  attrs.Metadata["original_name"]
+  ```
+
+- Added support for `Partial/Range` file requests ([#1125](https://github.com/pocketbase/pocketbase/issues/1125)).
+  This is a minor breaking change if you are using `filesystem.Serve` (eg. as part of a custom `OnFileDownloadRequest` hook):
+  ```go
+  // old
+  filesystem.Serve(res, e.ServedPath, e.ServedName)
+
+  // new
+  filesystem.Serve(res, req, e.ServedPath, e.ServedName)
+  ```
+
+- Refactored the `migrate` command to support **external JavaScript migration files** using an embedded JS interpreter ([goja](https://github.com/dop251/goja)).
+  This allow writing custom migration scripts such as programmatically creating collections,
+  initializing default settings, running data imports, etc., with a JavaScript API very similar to the Go one (_more documentation will be available soon_).
+
+  The `migrate` command is available by default for the prebuilt executable,
+  but if you use PocketBase as framework you need register it manually:
+  ```go
+  migrationsDir := "" // default to "pb_migrations" (for js) and "migrations" (for go)
+
+  // load js files if you want to allow loading external JavaScript migrations
+  jsvm.MustRegisterMigrations(app, &jsvm.MigrationsOptions{
+    Dir: migrationsDir,
+  })
+
+  // register the `migrate` command
+  migratecmd.MustRegister(app, app.RootCmd, &migratecmd.Options{
+    TemplateLang: migratecmd.TemplateLangJS, // or migratecmd.TemplateLangGo (default)
+    Dir:          migrationsDir,
+    Automigrate:  true,
+  })
+  ```
+
+  **The refactoring also comes with automigrations support.**
+
+  If `Automigrate` is enabled (`true` by default for the prebuilt executable; can be disabled with `--automigrate=0`),
+  PocketBase will generate seamlessly in the background JS (or Go) migration file with your collection changes.
+  **The directory with the JS migrations can be committed to your git repo.**
+  All migrations (Go and JS) are automatically executed on server start.
+  Also note that the auto generated migrations are granural (in contrast to the `migrate collections` snapshot command)
+  and allow multiple developers to do changes on the collections independently (even editing the same collection) miniziming the eventual merge conflicts.
+  Here is a sample JS migration file that will be generated if you for example edit a single collection name:
+  ```js
+  // pb_migrations/1669663597_updated_posts_old.js
+  migrate((db) => {
+    // up
+    const dao = new Dao(db)
+    const collection = dao.findCollectionByNameOrId("lngf8rb3dqu86r3")
+    collection.name = "posts_new"
+    return dao.saveCollection(collection)
+  }, (db) => {
+    // down
+    const dao = new Dao(db)
+    const collection = dao.findCollectionByNameOrId("lngf8rb3dqu86r3")
+    collection.name = "posts_old"
+    return dao.saveCollection(collection)
+  })
+  ```
+
+- Added new `Dao` helpers to make it easier fetching and updating the app settings from a migration:
+  ```go
+  dao.FindSettings([optEncryptionKey])
+  dao.SaveSettings(newSettings, [optEncryptionKey])
+  ```
+
+- Moved `core.Settings` to `models/settings.Settings`:
+  ```
+  core.Settings{}           -> settings.Settings{}
+  core.NewSettings()        -> settings.New()
+  core.MetaConfig{}         -> settings.MetaConfig{}
+  core.LogsConfig{}         -> settings.LogsConfig{}
+  core.SmtpConfig{}         -> settings.SmtpConfig{}
+  core.S3Config{}           -> settings.S3Config{}
+  core.TokenConfig{}        -> settings.TokenConfig{}
+  core.AuthProviderConfig{} -> settings.AuthProviderConfig{}
+  ```
+
+- Changed the `mailer.Mailer` interface (**minor breaking if you are sending custom emails**):
+  ```go
+  // Old:
+  app.NewMailClient().Send(from, to, subject, html, attachments?)
+
+  // New:
+  app.NewMailClient().Send(&mailer.Message{
+    From: from,
+    To: to,
+    Subject: subject,
+    HTML: html,
+    Attachments: attachments,
+    // new configurable fields
+    Bcc: []string{"bcc1@example.com", "bcc2@example.com"},
+    Cc: []string{"cc1@example.com", "cc2@example.com"},
+    Headers: map[string]string{"Custom-Header": "test"},
+    Text: "custom plain text version",
+  })
+  ```
+  The new `*mailer.Message` struct is also now a member of the `MailerRecordEvent` and `MailerAdminEvent` events.
+
+- Other minor UI fixes and improvements
+
+
 ## v0.8.0
 
 **⚠️ This release contains breaking changes and requires some manual migration steps!**
@@ -12,7 +246,7 @@ In addition to the `Users` and `profiles` merge, this release comes with several
 
 - The `json` field type now supports filtering and sorting [#423](https://github.com/pocketbase/pocketbase/issues/423#issuecomment-1258302125).
 
-- The `relation` field now allows unlimitted `maxSelect` (aka. without upper limit).
+- The `relation` field now allows unlimited `maxSelect` (aka. without upper limit).
 
 - Added support for combined email/username + password authentication (see below `authWithPassword()`).
 
@@ -648,7 +882,7 @@ Please check the individual SDK package changelog and apply the necessary change
     </tr>
   </table>
 
-- Marked as "Deprecated" and will be removed in v0.9:
+- Marked as "Deprecated" and will be removed in v0.9+:
     ```
     core.Settings.EmailAuth{}
     core.EmailAuthConfig{}
