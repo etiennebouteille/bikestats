@@ -1,0 +1,10 @@
+version: '1'
+services:
+  pocketbase:
+    container_name: bikestats-pb
+    build: .
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./builds/bikestats/pb_data:/pb_data
+    
