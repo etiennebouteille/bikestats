@@ -50,7 +50,7 @@
 		//TODO : get users default traj id
 		const payload = {
 			date: addDays(currentDay, dayDelta),
-			bike: 'epcjzi3j236yphy',
+			// bike: 'epcjzi3j236yphy',
 			trajet: data.user.default_trajet
 		};
 
