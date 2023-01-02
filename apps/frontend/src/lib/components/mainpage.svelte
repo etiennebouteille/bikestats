@@ -166,7 +166,7 @@
 	{#each weekdays as day, index}
 		<div class="flex flex-col items-center gap-3">
 			<p>{shortDaysString[index]}</p>
-			<div
+			<button
 				class="{!isEmpty(day)
 					? 'bg-emerald-400'
 					: 'bg-slate-300'} aspect-square rounded-full flex justify-center items-center cursor-pointer"
@@ -185,7 +185,7 @@
 				<p class="text-lg font-semibold text-lime-50">
 					{addDays(firstDayOfWeek, index).toLocaleDateString('fr-FR', { day: 'numeric' })}
 				</p>
-			</div>
+			</button>
 		</div>
 	{/each}
 </div>
@@ -215,5 +215,11 @@
 	#weektitle svg {
 		max-height: 20px;
 		/* fill: #64748b; */
+	}
+
+	.prevent-select {
+		-webkit-user-select: none; /* Safari */
+		-ms-user-select: none; /* IE 10 and IE 11 */
+		user-select: none; /* Standard syntax */
 	}
 </style>
