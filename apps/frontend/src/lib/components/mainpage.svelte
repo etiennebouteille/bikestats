@@ -18,6 +18,8 @@
 	export let data;
 	$: commutes = data.commutes;
 
+	console.log('user def traj : ', data.user.default_trajet);
+
 	let currentDay = new Date();
 	const today = new Date();
 	// $: console.log('today : ', today);
@@ -45,13 +47,11 @@
 		let dayDelta = dayIdx - currentDayIdx;
 
 		const yr = new Date().getFullYear();
-		//TODO : get users default traj id 
+		//TODO : get users default traj id
 		const payload = {
 			date: addDays(currentDay, dayDelta),
 			bike: 'epcjzi3j236yphy',
-			trajet: '93deadmeq4986wu'
-			// bike: 'en2el7ymwn7bl0j',
-			// trajet: 'hlovkbetapb7405'
+			trajet: data.user.default_trajet
 		};
 
 		const res = await fetch('/api/add-day', {

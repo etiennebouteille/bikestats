@@ -17,7 +17,7 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
 	<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
-	<link rel="manifest" href="/manifest.json">
+	<link rel="manifest" href="/manifest.json" />
 	<link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5" />
 	<meta name="msapplication-TileColor" content="#da532c" />
 	<meta name="theme-color" content="#ffffff" />
@@ -27,7 +27,10 @@
 <div id="container" class="w-80 m-auto pt-5">
 	{#if data.user}
 		<div class="flex justify-between">
-			<p class="text-lg mb-5 text-indigo-500 font-medium">🚴 Bonjour, {data.user.username} !</p>
+			<div class="flex gap-3">
+				<a class="text-2xl" href="/">🚴</a>
+				<p class="text-lg mb-5 text-indigo-800 font-medium pt-1">Bonjour, {data.user.username} !</p>
+			</div>
 			<a href="/settings" class="text-lg mb-5 text-indigo-500">
 				<svg
 					class="mt-1 h-5 w-5 fill-gray-400"
@@ -43,7 +46,6 @@
 
 	<slot />
 </div>
-
 
 <style>
 	:global(body) {
