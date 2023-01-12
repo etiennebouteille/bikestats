@@ -19,7 +19,13 @@
 <h3 class="mt-4 text-lg font-bold text-slate-900">Mes trajets</h3>
 
 {#each trajets as traj}
-	<TrajetCard {traj} user={data.user} />
+	<TrajetCard
+		{traj}
+		user={data.user}
+		on:delete={(e) => {
+			trajets = trajets.filter((t) => t.id != e.detail.id);
+		}}
+	/>
 {/each}
 <button
 	class="relative inline-block w-full rounded-lg py-3 px-4 border-dashed border-2 border-slate-300 mt-3 w-100"
