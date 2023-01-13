@@ -24,16 +24,16 @@ export async function load({ locals }) {
 
 export const actions = {
 	update: async ({ request, locals, url }) => {
+		console.log('trying to update');
 		const body = Object.fromEntries(await request.formData());
 
-		const bodyAsArray = Object.entries(body)
-		const data = Object.fromEntries(bodyAsArray.filter(([key, value]) => value !== ''))
-		
+		const bodyAsArray = Object.entries(body);
+		const data = Object.fromEntries(bodyAsArray.filter(([key, value]) => value !== ''));
+
 		const res = await locals.pb.collection('trajets').update(url.searchParams.get('id'), data);
 
-		//TODO : check succes
-		//TODO : add use:enhance and return list of trajets
-
-		return { success: true };
+		if (res) {
+			return { success: true };
+		}
 	}
 };

@@ -18,8 +18,6 @@
 	export let data;
 	$: commutes = data.commutes;
 
-	console.log('user def traj : ', data.user.default_trajet);
-
 	let currentDay = new Date();
 	const today = new Date();
 	// $: console.log('today : ', today);

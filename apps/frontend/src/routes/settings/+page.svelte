@@ -1,9 +1,8 @@
 <script>
 	import TrajetCard from '../../lib/components/TrajetCard.svelte';
 	export let data;
-	let trajets = data.trajets;
 
-	console.log(data.trajets);
+	// let default_trajet = data.user.default_trajet;
 
 	const handleNewTrajet = async () => {
 		console.log('posting new trajet');
@@ -12,19 +11,21 @@
 			body: JSON.stringify({})
 		});
 		const newTraj = await res.json();
-		trajets = [...trajets, newTraj];
+		data.trajets = [...data.trajets, newTraj];
 	};
 </script>
 
 <h3 class="mt-4 text-lg font-bold text-slate-900">Mes trajets</h3>
 
-{#each trajets as traj}
+{#each data.trajets as traj}
 	<TrajetCard
 		{traj}
 		user={data.user}
+		isDefault={data.user.default_trajet == traj.id}
 		on:delete={(e) => {
-			trajets = trajets.filter((t) => t.id != e.detail.id);
+			data.trajets = data.trajets.filter((t) => t.id != e.detail.id);
 		}}
+		on:newdefault={(e) => (data.user.default_trajet = e.detail.default)}
 	/>
 {/each}
 <button
