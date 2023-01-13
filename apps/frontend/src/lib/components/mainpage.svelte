@@ -20,7 +20,6 @@
 
 	let currentDay = new Date();
 	const today = new Date();
-	// $: console.log('today : ', today);
 	$: currentWeek = getWeek(new Date(currentDay));
 	$: currentMonth = new Date(currentDay).getMonth();
 	let commuteLength = 23.6;
@@ -45,7 +44,6 @@
 		let dayDelta = dayIdx - currentDayIdx;
 
 		const yr = new Date().getFullYear();
-		//TODO : get users default traj id
 		const payload = {
 			date: addDays(currentDay, dayDelta),
 			// bike: 'epcjzi3j236yphy',
@@ -86,7 +84,7 @@
 	$: totalDistance = commutes.reduce((accumulator, commute) => {
 		const dist = commute?.expand?.trajet?.distance * 2 || 0;
 		return accumulator + dist;
-	}, commutes[0]?.expand?.trajet?.distance * 2 || 0);
+	}, 0);
 
 	// $: totalDistance = commutes.length * commuteLength;
 	$: workedDaysInMonth = getWorkedDaysInMonth(currentDay, currentMonth);
