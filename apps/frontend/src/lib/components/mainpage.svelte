@@ -2,19 +2,21 @@
 	import lodash from 'lodash';
 	const { isEmpty } = lodash;
 	import { getWeek, getWorkedDaysInMonth } from '$lib/helpers/getWeekOf';
-
+	
 	import {
 		startOfWeek,
 		endOfWeek,
 		addDays,
 		differenceInBusinessDays,
-		startOfMonth
+		startOfMonth,
+		endOfMonth
 	} from 'date-fns';
-
+	import { press } from 'svelte-gestures';
+	
 	$: businessDaysSinceStartOfMonth =
-		Math.abs(differenceInBusinessDays(startOfMonth(today), today)) + 1;
-	$: trend = Math.round((selectedMonth.length * 100) / businessDaysSinceStartOfMonth);
-
+	Math.abs(differenceInBusinessDays(startOfMonth(today), today));
+	$: trend = Math.round((selectedMonth.filter(d => !d.isDisabled).length * 100) / (businessDaysSinceStartOfMonth - selectedMonth.filter(d => d.isDisabled).length));
+	
 	export let data;
 	$: commutes = data.commutes;
 
@@ -22,7 +24,6 @@
 	const today = new Date();
 	$: currentWeek = getWeek(new Date(currentDay));
 	$: currentMonth = new Date(currentDay).getMonth();
-	let commuteLength = 23.6;
 	$: firstDayOfWeek = startOfWeek(currentDay, { weekStartsOn: 1 });
 
 	const shortDaysString = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'];
@@ -46,7 +47,6 @@
 		const yr = new Date().getFullYear();
 		const payload = {
 			date: addDays(currentDay, dayDelta),
-			// bike: 'epcjzi3j236yphy',
 			trajet: data.user.default_trajet
 		};
 
@@ -56,6 +56,44 @@
 		});
 		const record = await res.json();
 		commutes = [...commutes, record];
+	};
+
+	const handleDisableDate = async (dayIdx) => {
+		console.log('sending disabled date');
+
+		let res;
+
+		if (isEmpty(weekdays[dayIdx])) {
+			const currentDayIdx = [...daysOfTheWeek, 'samedi', 'dimanche'].findIndex(
+				(d) => d === currentDay.toLocaleDateString('fr-FR', { weekday: 'long' })
+			);
+			let dayDelta = dayIdx - currentDayIdx;
+			const yr = new Date().getFullYear();
+			const payload = {
+				date: addDays(currentDay, dayDelta),
+				isDisabled: true
+			};
+
+			res = await fetch('/api/add-day', {
+				method: 'POST',
+				body: JSON.stringify(payload)
+			});
+			const record = await res.json();
+			console.log('res : ', record);
+			commutes = [...commutes, record];
+		} else {
+			const payload = {
+				dayid: weekdays[dayIdx].id,
+				isDisabled: true
+			};
+
+			res = await fetch(`/api/update-day`, {
+				method: 'POST',
+				body: JSON.stringify(payload)
+			});
+			const record = await res.json();
+			commutes = commutes.map((c) => (c.id == record.id ? record : c));
+		}
 	};
 
 	const handleDeleteDate = async (day) => {
@@ -82,14 +120,31 @@
 	});
 
 	$: totalDistance = commutes.reduce((accumulator, commute) => {
+		if (commute.isDisabled) {
+			return accumulator + 0;
+		}
 		const dist = commute?.expand?.trajet?.distance * 2 || 0;
 		return accumulator + dist;
 	}, 0);
 
-	// $: totalDistance = commutes.length * commuteLength;
-	$: workedDaysInMonth = getWorkedDaysInMonth(currentDay, currentMonth);
-	$: currentMonthStat = Math.round((selectedMonth.length * 100) / workedDaysInMonth);
-	$: weeklyDistance = Math.round(selectedWeek.length * commuteLength);
+	const getColorFromDayStatus = (day) => {
+		if (isEmpty(day)) {
+			return 'bg-slate-300';
+		} else if (day.isDisabled) {
+			return 'bg-indigo-900';
+		} else {
+			return 'bg-emerald-400';
+		}
+	};
+
+
+	const getMonthStats = (m) => {
+		const totalEnabledDays = Math.abs(differenceInBusinessDays(startOfMonth(today), endOfMonth(today))) - m.filter(d => d.isDisabled).length
+		const workedDaysThisMonth = m.filter(d => !d.isDisabled).length
+		return Math.round(workedDaysThisMonth * 100 / totalEnabledDays)
+	}
+
+	$: currentMonthStat = getMonthStats(selectedMonth);
 </script>
 
 <h2 class="text-slate-500 text-xl">Depuis le début</h2>
@@ -163,9 +218,9 @@
 		<div class="flex flex-col items-center gap-3">
 			<p>{shortDaysString[index]}</p>
 			<button
-				class="{!isEmpty(day)
-					? 'bg-emerald-400'
-					: 'bg-slate-300'} aspect-square rounded-full flex justify-center items-center cursor-pointer"
+				class="{getColorFromDayStatus(
+					day
+				)} aspect-square rounded-full flex justify-center items-center cursor-pointer"
 				style="width: 42px;"
 				on:click={(e) => {
 					if (isEmpty(day)) {
@@ -176,6 +231,10 @@
 				}}
 				on:keydown={(e) => {
 					handleCheckedDate(index);
+				}}
+				use:press={{ timeframe: 300, triggerBeforeFinished: false }}
+				on:press={() => {
+					handleDisableDate(index);
 				}}
 			>
 				<p class="text-lg font-semibold text-lime-50">

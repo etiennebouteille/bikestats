@@ -2,7 +2,6 @@
 	import PocketBase from 'pocketbase';
 	import { createEventDispatcher } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
 
 
 	const dispatch = createEventDispatcher();
