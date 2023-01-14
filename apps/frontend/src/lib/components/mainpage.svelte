@@ -2,7 +2,7 @@
 	import lodash from 'lodash';
 	const { isEmpty } = lodash;
 	import { getWeek, getWorkedDaysInMonth } from '$lib/helpers/getWeekOf';
-	
+
 	import {
 		startOfWeek,
 		endOfWeek,
@@ -11,12 +11,14 @@
 		startOfMonth,
 		endOfMonth
 	} from 'date-fns';
-	import { press } from 'svelte-gestures';
-	
-	$: businessDaysSinceStartOfMonth =
-	Math.abs(differenceInBusinessDays(startOfMonth(today), today));
-	$: trend = Math.round((selectedMonth.filter(d => !d.isDisabled).length * 100) / (businessDaysSinceStartOfMonth - selectedMonth.filter(d => d.isDisabled).length));
-	
+	import { press, swipe } from 'svelte-gestures';
+
+	$: businessDaysSinceStartOfMonth = Math.abs(differenceInBusinessDays(startOfMonth(today), today));
+	$: trend = Math.round(
+		(selectedMonth.filter((d) => !d.isDisabled).length * 100) /
+			(businessDaysSinceStartOfMonth - selectedMonth.filter((d) => d.isDisabled).length)
+	);
+
 	export let data;
 	$: commutes = data.commutes;
 
@@ -137,17 +139,26 @@
 		}
 	};
 
-
 	const getMonthStats = (m) => {
-		const totalEnabledDays = Math.abs(differenceInBusinessDays(startOfMonth(today), endOfMonth(today))) - m.filter(d => d.isDisabled).length
-		const workedDaysThisMonth = m.filter(d => !d.isDisabled).length
-		return Math.round(workedDaysThisMonth * 100 / totalEnabledDays)
-	}
+		const totalEnabledDays =
+			Math.abs(differenceInBusinessDays(startOfMonth(today), endOfMonth(today))) -
+			m.filter((d) => d.isDisabled).length;
+		const workedDaysThisMonth = m.filter((d) => !d.isDisabled).length;
+		return Math.round((workedDaysThisMonth * 100) / totalEnabledDays);
+	};
+
+	const handleSwipe = (event) => {
+		if (event.detail.direction == 'right') {
+			currentDay = addDays(currentDay, -7);
+		} else if (event.detail.direction == 'left') {
+			currentDay = addDays(currentDay, +7);
+		}
+	};
 
 	$: currentMonthStat = getMonthStats(selectedMonth);
 </script>
 
-<h2 class="text-slate-500 text-xl">Depuis le début</h2>
+<h2 class="text-slate-500 text-xl">Vous avez parcouru</h2>
 <h1 class="mt-0 leading-none text-slate-900"><span>{Math.round(totalDistance)}</span>km</h1>
 
 <div
@@ -213,7 +224,11 @@
 	>
 </div>
 
-<div class="bg-slate-50 rounded-xl flex justify-evenly mt-2 py-4 shadow-sm">
+<div
+	class="bg-slate-50 rounded-xl flex justify-evenly mt-2 py-4 shadow-sm"
+	use:swipe={{ timeframe: 500, minSwipeDistance: 100 }}
+	on:swipe={handleSwipe}
+>
 	{#each weekdays as day, index}
 		<div class="flex flex-col items-center gap-3">
 			<p>{shortDaysString[index]}</p>

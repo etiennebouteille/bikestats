@@ -41,3 +41,4 @@
 		<p>Nouveau trajet</p>
 	</div>
 </button>
+<p class="mt-3 px-2 text-slate-700 text-center italic">Astuce : restez appuyé sur une date pour la désactiver si vous êtes en vacances ou en télétravail.</p>
