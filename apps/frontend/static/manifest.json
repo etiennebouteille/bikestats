@@ -1,9 +1,9 @@
 {
-	"name": "Flytta - données mobilité",
-	"short_name": "Flytta",
+	"name": "Deuxroues - données mobilité",
+	"short_name": "Deux roues",
 	"start_url": ".",
 	"display": "standalone",
-	"background_color": "#fff",
+	"background_color": "#F5F6E2",
 	"theme_color": "#F5F6E2",
 	"description": "Une micro application pour suivre vos trajets à vélo",
 	"icons": [

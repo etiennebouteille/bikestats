@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>Flytta - données mobilité durable</title>
+	<title>Deux roues - données mobilité durable</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com" /><link
 		rel="preconnect"
 		href="https://fonts.gstatic.com"

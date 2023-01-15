@@ -8,7 +8,9 @@
 {:else}
 	<div id="hero-container" class="flex items-center h-full">
 		<div>
-			<h1 class="text-6xl text-slate-900 text-center">Bienvenue sur Flytta!</h1>
+			<h1 class="text-6xl text-slate-900 text-center">
+				Bienvenue sur<img src="/logo.svg" style="max-width:80px" class="inline-block" />
+			</h1>
 			<p class="mx-auto mt-3 max-w-md text-center text-gray-500 text-lg">
 				Une micro application pour suivre vos déplacements à vélo.
 			</p>
