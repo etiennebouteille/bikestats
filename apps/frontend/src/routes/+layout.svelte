@@ -4,12 +4,15 @@
 </script>
 
 <svelte:head>
-	<title>Deux roues - données mobilité durable</title>
+	<title>Données mobilité durable</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com" /><link
 		rel="preconnect"
 		href="https://fonts.gstatic.com"
 		crossorigin
-	/><link href="https://fonts.googleapis.com/css2?family=Anton&family=Rubik:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+	/><link
+		href="https://fonts.googleapis.com/css2?family=Anton&family=Rubik:ital,wght@0,300;0,400;0,600;1,400&display=swap"
+		rel="stylesheet"
+	/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
@@ -21,12 +24,15 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1" />
 </svelte:head>
 
-<div id="container" class="w-80 m-auto pt-5">
+<div id="container" class="w-80 m-auto pt-3">
 	{#if data.user}
-		<div class="flex justify-between">
+		<div class="flex justify-between items-center">
 			<div class="flex gap-3">
-				<a class="text-2xl" href="/">🚴</a>
-				<p class="text-lg mb-5 text-indigo-800 font-medium pt-1">Bonjour, {data.user.username} !</p>
+				<!-- <a class="text-2xl" href="/">🚴</a> -->
+				<a href="/">
+					<img src="/logo.svg"  class="h-7 inline-block" />
+				</a>
+				<p class="text-lg text-indigo-800 font-medium">Bonjour, {data.user.username} !</p>
 			</div>
 			<a href="/settings" class="text-lg mb-5 text-indigo-500">
 				<svg
@@ -53,6 +59,7 @@
 			rgba(255, 244, 228, 1) 7.1%,
 			rgba(240, 246, 238, 1) 67.4%
 		);
+		/* background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%); */
 	}
 
 	#container {
